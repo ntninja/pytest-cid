@@ -53,7 +53,7 @@ def normalize(obj):
 		# Recreate mapping object with new values
 		# NOTE: Recreating mappings in this way may not work for custom types!
 		if mutated:
-			obj = obj.__class__(items)
+			obj = obj.__class__(dict(items))
 		items = None
 	
 	return obj
