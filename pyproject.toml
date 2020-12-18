@@ -14,9 +14,8 @@ description-file = "README.md"
 
 requires-python = ">=3.5"
 requires = [
-	"pytest ~= 3.5",
-	"py-cid",
-	"six"
+	"pytest >= 5.0, < 7.0",
+	"py-cid"
 ]
 
 classifiers = [
