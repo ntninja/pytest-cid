@@ -5,7 +5,7 @@ import collections.abc
 import cid
 
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 
 def normalize(obj):
