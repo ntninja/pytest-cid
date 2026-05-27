@@ -30,16 +30,27 @@ import shlex
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.autosectionlabel',
     'sphinx.ext.ifconfig',
+    'sphinx_breeze_theme',
+    'myst_parser',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
-# You can specify multiple suffix as a list of string:
-# source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = {
+	".rst": "restructuredtext",
+	".md": "markdown",
+}
+
+# Closest MyST extension list to GitHub Flavoured Markdown for README.md compatibility.
+myst_enable_extensions = [
+	"gfm_autolink",
+	"strikethrough",
+	"tasklist",
+]
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
@@ -110,7 +121,9 @@ todo_include_todos = False
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'alabaster'
+#
+# `sphinx-breeze-theme` supports automatic light and dark mode.
+html_theme = 'breeze'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
