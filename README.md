@@ -69,7 +69,7 @@ Join us on [Matrix](https://matrix.to/#/#py-ipfs:ninetailed.ninja?via=ninetailed
 
 ### Bug reports
 
-You can submit bug reports using the [GitHub issue tracker](https://github.com/alexander255/pytest-cid/issues).
+You can submit bug reports using the [Codeberg issue tracker](https://codeberg.org/ntninja/pytest-cid/issues) only.
 
 ### Pull requests
 
@@ -84,6 +84,10 @@ And the unit tests:
 
 Please make sure to include new unit tests for new features or changes in
 behavior.
+
+Pull requests opened on GitHub create extra work for the author, please submit
+your code [using Codeberg](https://codeberg.org/ntninja/pytest-cid/pulls) if
+you can!
 
 ## License
 
