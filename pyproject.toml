@@ -7,7 +7,7 @@ module = "pytest_cid"
 
 author       = "Erin of Yukis"
 author-email = "erin-dev@yukis.eu"
-home-page    = "https://ipfs.io/ipns/12D3KooWEqnTdgqHnkkwarSrJjeMP2ZJiADWLYADaNvUb6SQNyPF/"
+home-page    = "https://k51qzi5uqu5dm4rwcy42oe25o0nwh7706xpf2adh9ca0i7yswqrgicxmk1f51m.ipns.dweb.link/"
 keywords     = "ipfs storage distribution development"
 license      = "MPL-2.0"
 description-file = "README.md"

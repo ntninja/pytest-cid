@@ -7,6 +7,21 @@ SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = _build
 
+# Custom values for IPNS uploader.
+#
+# To replicate:
+#  * Set the “IPFS_CLUSTER_PIN” (name of IPNS key and IPFS cluster pin) name and “IPFS_REMOTE_SSH_HOST” (additional host to update IPNS pin at).
+#     * The remote SSH host is a workaround for https://github.com/ipfs-cluster/ipfs-cluster/issues/1159 – otherwise support for this can be removed.
+#  * Generate new IPNS key:      `ipfs key gen ${IPFS_CLUSTER_PIN}`
+#  * Copy IPNS key to remote:    `ipfs key export -o/dev/stdout ${IPFS_CLUSTER_PIN} | ssh ${IPFS_REMOTE_SSH_HOST} ipfs key import ${IPFS_CLUSTER_PIN} /dev/stdin`
+#     * Only needed if using IPNS publish workaround (see above).
+#  * Create initial cluster pin: `ipfs-cluster-ctl pin add --name=${IPFS_CLUSTER_PIN} $(ipfs add -Q --progress --recursive --hidden --cid-version=1 docs/_build/html)`
+#  * Update cluster pin:         `make -C docs publish`
+IPFS_CLUSTER_PIN=ntninja_pytest-cid_docs
+IPFS_LOCAL_NAME_KEY=$(IPFS_CLUSTER_PIN)
+IPFS_REMOTE_NAME_KEY=$(IPFS_CLUSTER_PIN)
+IPFS_REMOTE_SSH_HOST=triglav
+
 # User-friendly check for sphinx-build
 ifeq ($(shell which $(SPHINXBUILD) >/dev/null 2>&1; echo $$?), 1)
 $(error The '$(SPHINXBUILD)' command was not found. Make sure you have Sphinx installed, then set the SPHINXBUILD environment variable to point to the full path of the '$(SPHINXBUILD)' executable. Alternatively you can add the directory with the executable to your PATH. If you don't have Sphinx installed, grab it from http://sphinx-doc.org/)
@@ -47,6 +62,8 @@ help:
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 	@echo "  coverage   to run coverage check of the documentation (if enabled)"
+	@echo
+	@echo "  publish    to make and upload standalone HTML files"
 
 clean:
 	rm -rf $(BUILDDIR)/*
@@ -190,3 +207,22 @@ pseudoxml:
 	$(SPHINXBUILD) -b pseudoxml $(ALLSPHINXOPTS) $(BUILDDIR)/pseudoxml
 	@echo
 	@echo "Build finished. The pseudo-XML files are in $(BUILDDIR)/pseudoxml."
+
+
+.ONESHELL: publish
+publish: html
+	set -eu
+
+	OLD_CID="$$(ipfs-cluster-ctl --encoding=json pin ls | jq -r 'select(.name == "$(IPFS_CLUSTER_PIN)").cid')"
+	NEW_CID="$$(ipfs add -Q --progress --recursive --hidden --cid-version=1 "$(BUILDDIR)/html")"
+	if [ "$${OLD_CID}" != "$${NEW_CID}" ];
+	then
+		echo "Pin “$(IPFS_CLUSTER_PIN)” CID needs update: $${OLD_CID} → $${NEW_CID}"
+		ipfs-cluster-ctl pin update "$${OLD_CID}" "$${NEW_CID}"
+		ipfs-cluster-ctl pin rm "$${OLD_CID}"
+	else
+		echo "Pin “$(IPFS_CLUSTER_PIN)” CID is unchanged: $${OLD_CID}"
+	fi
+	ipfs name publish -k "$(IPFS_LOCAL_NAME_KEY)" "$${NEW_CID}"
+	ssh "$(IPFS_REMOTE_SSH_HOST)" ipfs name publish -k "$(IPFS_REMOTE_NAME_KEY)" "$${NEW_CID}"
+	ipfs-cluster-ctl recover  # Sometimes appears to be needed
