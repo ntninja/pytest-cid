@@ -55,6 +55,8 @@ Basic usage example:
 
 ## Documentation
 
+https://k51qzi5uqu5dm4rwcy42oe25o0nwh7706xpf2adh9ca0i7yswqrgicxmk1f51m.ipns.dweb.link/
+
 FIXME (Usage example covers the whole API as of 1.0.0)
 
 ## Contribute
